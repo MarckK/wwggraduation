@@ -61,6 +61,4 @@ func sendData(rw http.ResponseWriter, r *http.Request) {
 	}
 	instructions := bytes.NewReader(data)
 	http.NewRequest("POST", "http://localhost:9000/senddata", instructions)
-
-	// rw.Write(data)
 }
