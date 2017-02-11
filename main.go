@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"io/ioutil"
 	"log"
@@ -58,5 +59,8 @@ func sendData(rw http.ResponseWriter, r *http.Request) {
 		rw.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	rw.Write(data)
+	instructions := bytes.NewReader(data)
+	http.NewRequest("POST", "http://localhost:9000/senddata", instructions)
+
+	// rw.Write(data)
 }
