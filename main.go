@@ -2,12 +2,13 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"sort"
 )
+
+var commands Commands
 
 type Command struct {
 	Direction string
@@ -40,13 +41,22 @@ func main() {
 		log.Fatal(err)
 	}
 
-	commands := Commands{}
+	commands = Commands{}
 	err = json.Unmarshal(data, &commands)
 
 	sort.Sort(commands)
 
-	for _, command := range commands {
-		fmt.Println(command)
-	}
+	http.HandleFunc("/senddata", sendData)
 
+	http.ListenAndServe(":9000", http.DefaultServeMux)
+
+}
+
+func sendData(rw http.ResponseWriter, r *http.Request) {
+	data, err := json.Marshal(commands)
+	if err != nil {
+		rw.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	rw.Write(data)
 }
