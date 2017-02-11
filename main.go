@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -60,5 +61,16 @@ func sendData(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 	instructions := bytes.NewReader(data)
-	http.NewRequest("POST", "http://localhost:9000/senddata", instructions)
+	req, err := http.NewRequest("POST", "http://localhost:9000/senddata", instructions)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Println(resp.Status)
+
 }
